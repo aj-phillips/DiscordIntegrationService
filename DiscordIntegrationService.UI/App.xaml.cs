@@ -32,13 +32,18 @@ public partial class App : Application
                     new SettingsService(Path.Combine(AppContext.BaseDirectory, "settings.json")));
                 services.AddSingleton<IWindowMonitorService, WindowMonitorService>();
                 services.AddSingleton<IPresenceUpdateDecisionService, PresenceUpdateDecisionService>();
-                
+
                 services.AddSingleton<IDiscordRpcClient>(sp =>
                 {
                     var settings = sp.GetRequiredService<ISettingsService>().Load();
                     var clientId = CryptoHelper.Deobfuscate(settings.DiscordClientId);
                     var client = new DiscordRpcClientAdapterService(clientId);
-                    client.Initialize();
+
+                    if (!string.IsNullOrWhiteSpace(clientId))
+                        client.Initialize();
+                    else
+                        Console.WriteLine("[DI] No Discord Client ID provided. Skipping Discord RPC init.");
+
                     return client;
                 });
 
@@ -52,7 +57,7 @@ public partial class App : Application
             .Build();
 
         _host.Start();
-        
+
         var iconPath = Path.Combine(AppContext.BaseDirectory, "Resources", "dis-logo.ico");
 
         if (!File.Exists(iconPath)) MessageBox.Show($"Icon not found: {iconPath}");

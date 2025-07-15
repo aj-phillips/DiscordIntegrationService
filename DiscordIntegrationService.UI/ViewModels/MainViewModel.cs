@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DiscordIntegrationService.Core.Interfaces;
@@ -53,6 +54,19 @@ public partial class MainViewModel : ObservableObject
         RemoveFromExcludeListCommand.NotifyCanExecuteChanged();
     }
 
+    private static void RestartApplicationOnClientIdChange(string value, Settings settings)
+    {
+        if (settings.DiscordClientId == value) return;
+
+        var result = MessageBox.Show(
+            "Your Discord Application ID has changed.\nYou need to restart the application for changes to take effect.\n\nRestart now?",
+            "Restart Required",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+
+        if (result == MessageBoxResult.Yes) RestartApplication();
+    }
+
     private void PopulateSettingsValues(Settings settings)
     {
         EnableRichPresence = settings.EnableRichPresence;
@@ -70,6 +84,15 @@ public partial class MainViewModel : ObservableObject
         PresenceStateTemplate = settings.PresenceStateTemplate ?? "{Title}";
 
         IsPasswordVisible = false;
+    }
+
+    private static void RestartApplication()
+    {
+        var exePath = Process.GetCurrentProcess().MainModule?.FileName;
+
+        if (!string.IsNullOrEmpty(exePath)) Process.Start(exePath);
+
+        Application.Current.Shutdown();
     }
 
     [RelayCommand(CanExecute = nameof(CanAdd))]
@@ -117,6 +140,8 @@ public partial class MainViewModel : ObservableObject
         };
 
         _settingsService.Save(settings);
+
+        RestartApplicationOnClientIdChange(DiscordClientId, settings);
 
         if (!EnableRichPresence)
             await _discordPresenceUpdaterService.ClearPresenceAsync();

@@ -2,11 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:utils="clr-namespace:DiscordIntegrationService.UI.Utils"
+        xmlns:converters="clr-namespace:DiscordIntegrationService.UI.Converters"
         Title="Discord Integration Service - Settings"
         Height="650" Width="420"
         WindowStartupLocation="CenterScreen"
         Background="#FAFAFA"
-        Icon="Resources/dis-logo.ico"
         ResizeMode="NoResize">
     <Window.Resources>
         <Style TargetType="GroupBox">
@@ -95,6 +95,9 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:EyeIconConverter x:Key="EyeIconConverter" />
     </Window.Resources>
 
     <DockPanel LastChildFill="True" Margin="10">

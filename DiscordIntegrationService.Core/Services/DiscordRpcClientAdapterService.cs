@@ -5,23 +5,58 @@ namespace DiscordIntegrationService.Core.Services;
 
 public class DiscordRpcClientAdapterService : IDiscordRpcClient
 {
-    private readonly DiscordRpcClient _client;
+    private readonly string? _clientId;
+    private DiscordRpcClient _client;
 
     private bool _disposed;
 
-    public DiscordRpcClientAdapterService(string clientId)
+    public DiscordRpcClientAdapterService(string? clientId)
     {
-        _client = new DiscordRpcClient(clientId);
+        _clientId = clientId;
     }
 
-    public void Initialize() => _client.Initialize();
+    public void Initialize()
+    {
+        if (string.IsNullOrWhiteSpace(_clientId))
+        {
+            Console.WriteLine("[DiscordRpcClientAdapterService] Client ID is empty. Skipping initialization.");
+            return;
+        }
 
-    public bool IsInitialized => _client.IsInitialized;
+        if (_client is { IsInitialized: true })
+        {
+            Console.WriteLine("[DiscordRpcClientAdapterService] Already initialized.");
+            return;
+        }
 
-    public void SetPresence(RichPresence presence) => _client.SetPresence(presence);
+        _client = new DiscordRpcClient(_clientId);
+        _client.Initialize();
+    }
 
-    public void ClearPresence() => _client.ClearPresence();
-    
+    public bool IsInitialized => _client?.IsInitialized ?? false;
+
+    public void SetPresence(RichPresence presence)
+    {
+        if (!IsInitialized)
+        {
+            Console.WriteLine("[DiscordRpcClientAdapterService] Not initialized. Skipping presence update.");
+            return;
+        }
+
+        _client!.SetPresence(presence);
+    }
+
+    public void ClearPresence()
+    {
+        if (!IsInitialized)
+        {
+            Console.WriteLine("[DiscordRpcClientAdapterService] Not initialized. Skipping clear.");
+            return;
+        }
+
+        _client!.ClearPresence();
+    }
+
     public void Dispose()
     {
         Dispose(true);
@@ -32,10 +67,7 @@ public class DiscordRpcClientAdapterService : IDiscordRpcClient
     {
         if (_disposed) return;
 
-        if (disposing)
-        {
-            _client?.Dispose();
-        }
+        if (disposing) _client?.Dispose();
 
         _disposed = true;
     }

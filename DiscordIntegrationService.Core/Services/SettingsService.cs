@@ -63,7 +63,7 @@ public class SettingsService : ISettingsService
     {
         return new Settings
         {
-            EnableRichPresence = true,
+            EnableRichPresence = false,
             PollIntervalSeconds = 2,
             ExcludeList = new List<string>(),
             DiscordClientId = "",

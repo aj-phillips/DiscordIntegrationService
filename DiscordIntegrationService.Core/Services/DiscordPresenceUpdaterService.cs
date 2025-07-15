@@ -11,19 +11,20 @@ public sealed class DiscordPresenceUpdaterService : IDiscordPresenceUpdaterServi
     private readonly IWindowMonitorService _windowMonitorService;
     private IDiscordRpcClient? _client;
     private string? _currentClientId;
+
+    private bool _disposed;
     private bool _isPresenceSet;
     private Settings _settings;
 
-    private bool _disposed;
-
-    public DiscordPresenceUpdaterService(ISettingsService settingsService, IWindowMonitorService windowMonitorService, IDiscordRpcClient discordRpcClient)
+    public DiscordPresenceUpdaterService(ISettingsService settingsService, IWindowMonitorService windowMonitorService,
+        IDiscordRpcClient discordRpcClient)
     {
         _windowMonitorService = windowMonitorService;
         _settingsService = settingsService;
         _client = discordRpcClient;
-        
+
         ReloadSettings();
-        
+
         TryInitialize(_settings);
     }
 
@@ -37,7 +38,8 @@ public sealed class DiscordPresenceUpdaterService : IDiscordPresenceUpdaterServi
 
         if (CryptoHelper.Deobfuscate(settings.DiscordClientId) == _currentClientId) return;
 
-        Console.WriteLine($"[DiscordPresenceUpdaterService] Reconnecting Discord RPC with new Client ID: {settings.DiscordClientId}");
+        Console.WriteLine(
+            $"[DiscordPresenceUpdaterService] Reconnecting Discord RPC with new Client ID: {settings.DiscordClientId}");
 
         _client?.Dispose();
         TryInitialize(settings);
@@ -88,7 +90,7 @@ public sealed class DiscordPresenceUpdaterService : IDiscordPresenceUpdaterServi
 
         await UpdatePresenceAsync(window, CancellationToken.None);
     }
-    
+
     public void Dispose()
     {
         Dispose(true);
@@ -127,6 +129,7 @@ public sealed class DiscordPresenceUpdaterService : IDiscordPresenceUpdaterServi
         _client.Initialize();
         _currentClientId = realClientId;
 
-        Console.WriteLine($"[DiscordPresenceUpdaterService] Initialized Discord RPC with Client ID: {settings.DiscordClientId}");
+        Console.WriteLine(
+            $"[DiscordPresenceUpdaterService] Initialized Discord RPC with Client ID: {settings.DiscordClientId}");
     }
 }
