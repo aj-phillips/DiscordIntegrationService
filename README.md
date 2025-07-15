@@ -18,7 +18,7 @@ A lightweight Windows desktop app that automatically updates your Discord Rich P
 
 ## ⚙️ Installation
 
-- Download the latest release from Releases (Add your link)
+- Download the latest release from [Releases](https://github.com/aj-phillips/DiscordIntegrationService/releases)
 - Extract the zip somewhere safe
 - Run DiscordIntegrationService.exe
 
@@ -27,7 +27,7 @@ A lightweight Windows desktop app that automatically updates your Discord Rich P
 ## 🛠️ Getting Started
 
 - Open Settings
-  - Right click the DIS icon in your taskbar tray and click "Open Settings"
+  - Right click the icon in your taskbar tray (make sure to expand it using the ^ button) and click "Open Settings"
 - Get your Discord Application ID:
   - Create an application at Discord Developer Portal
   - Copy the Application ID and paste it into the app’s Discord Application ID field.
