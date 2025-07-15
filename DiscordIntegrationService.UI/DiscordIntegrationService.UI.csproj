@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
+        <ApplicationIcon>Resources\dis-logo.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -24,7 +25,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="Resources\dis-logo.ico"/>
         <Content Include="Resources\dis-logo.ico">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
